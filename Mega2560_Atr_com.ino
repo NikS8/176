@@ -1135,13 +1135,15 @@ String getUrlSegment(String urlStr, short pos) {
 JsonObject& prepareResponse(JsonBuffer& jsonBuffer) {
 
   JsonObject& root = jsonBuffer.createObject();
-  root["time"] = (time.gettime("Y-m-dTH:i:s+0200"));        // записываем дату и время
+  root["time"] = (time.gettime("Y-m-dTH:i:s+0200"));  // записываем дату и время
 
   JsonArray& analogValues = root.createNestedArray("analog");
 
- // root["sensorPhotoBoiler"] = sensorPhotoBoiler;
-    root["sensorPhotoBoiler"] = aTrans2Boiler;
-  root["sensorPressTankFrom"] = sensorPressTankFrom;  // давление от датчика давления в трубе от бака
+ root["aTrans1Boiler"] = aTrans1Boiler; // эл.ток от трансформатора тока ТЭН №1
+ root["aTrans2Boiler"] = aTrans2Boiler; // эл.ток от трансформатора тока ТЭН №2
+ root["aTrans3Boiler"] = aTrans3Boiler; // эл.ток от трансформатора тока ТЭН №3
+
+ root["sensorPressTankFrom"] = sensorPressTankFrom; // давление от датчика давления в трубе от бака
 
   JsonArray& digitalValues = root.createNestedArray("digital");
 
