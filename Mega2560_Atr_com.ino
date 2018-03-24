@@ -58,13 +58,14 @@ struct RECEIVE_DATA_21_OF_BOILER {         // структура, которую
   int aTrans1Boiler;      //  эл.ток от тр-ра тока ТЭНа №1
   int aTrans2Boiler;      //  эл.ток от тр-ра тока ТЭНа №2
   int aTrans3Boiler;      //  эл.ток от тр-ра тока ТЭНа №3
+  int statePin;      //  статус Pin
 };
 
 struct RECEIVE_DATA_61_OF_KITCHEN {         // структура, которую будем принимать
   int ID;
   int sensorDhtTKitchen;      // температура датчика DTH22 в летней кухне
   int sensorDhtHKitchen;      // влажность датчика DTH22 в летней кухне
-  int sensorAlarmKitchen;     //сигнал открытия двери и окон в летней кухне
+  int sensorAlarmKitchen;     // сигнал открытия двери и окон в летней кухне
 };
 
 //give a name to the group of data
@@ -99,6 +100,8 @@ float sensorPressTankFrom;    // давление от датчика давле
 int tempDhtKitchen;      // температура датчика DTH22 в летней кухне
 int humDhtKitchen;       // влажность датчика DTH22 в летней кухне
 int sensorAlarmKitchen;  //сигнал открытия двери и окон в летней кухне
+
+int statePin;
 
 //------------------------------------
 #include <LiquidCrystal_1602_RUS.h>
@@ -473,10 +476,13 @@ void receiveDataETinOfBoiler() {
   //  sensorPressTankFrom = (sensorPressTankFrom * 0.0259);
 
   aTrans1Boiler = rxOf21.aTrans1Boiler;
-
+  aTrans1Boiler = aTrans1Boiler * 0.078;      //  эл.ток от тр-ра тока ТЭНа №1
   aTrans2Boiler = rxOf21.aTrans2Boiler;
-
+  aTrans2Boiler = aTrans2Boiler * 0.078;      //  эл.ток от тр-ра тока ТЭНа №2
   aTrans3Boiler = rxOf21.aTrans3Boiler;
+  aTrans3Boiler = aTrans3Boiler * 0.078;      //  эл.ток от тр-ра тока ТЭНа №3
+
+  statePin = rxOf21.statePin;       // состояние уровня Pina
   ////////////////
 
   /*Serial.print(" rxOf21.ID = ");
@@ -1171,6 +1177,10 @@ JsonObject& prepareResponse(JsonBuffer& jsonBuffer) {
   root["tempDsCollectorOut"] = tempDsCollectorOut;
   root["tempDsHallIn"] = tempDsHallIn;
   root["tempDsHallOut"] = tempDsHallOut;
+
+  JsonArray& digitalValues = root.createNestedArray("state");
+
+  root["statePin"] = statePin;  //  состояние PINa
 
   return root;
 }
